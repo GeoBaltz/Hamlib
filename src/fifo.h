@@ -36,7 +36,7 @@ typedef struct FIFO_RIG_s
     char data[HAMLIB_FIFO_SIZE];
     int head;
     int tail;
-    int flush;  // flush flag for stop_morse
+    volatile int flush;  // flush flag for stop_morse
     pthread_mutex_t mutex;
 } FIFO_RIG;
 
