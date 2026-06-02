@@ -29,7 +29,7 @@
 #include "kenwood.h"
 #include "th.h"
 #include "misc.h"
-
+#include "iofunc.h"
 
 // Some commands are very slow to process so we put a DELAY in those places
 #define DELAY hl_usleep(300*1000)
