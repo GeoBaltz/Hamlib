@@ -1165,6 +1165,13 @@ void *handle_socket(void *arg)
         goto handle_exit;
     }
 
+    retcode = pthread_setspecific(thread_data_key, arg);
+    if (0 != retcode)
+    {
+        rig_debug(RIG_DEBUG_ERR, "%s: Could not set thread daya\n", __func__);
+        // What do we do here?
+    }
+
     mutex_rigctld(1);
 
     ++client_count;
@@ -1352,6 +1359,7 @@ handle_exit:
 
 #endif
 
+    pthread_setspecific(thread_data_key, NULL);      // The pthreads we're done with the data
     free(arg);
 
     pthread_exit(NULL);
