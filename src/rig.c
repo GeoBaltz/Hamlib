@@ -8837,6 +8837,7 @@ static void *morse_data_handler(void *arg)
     free(c);
 
     pthread_exit(NULL);
+    return NULL;             // May get a warning if pthread_exit() has [[noreturn]]
 }
 
 
