@@ -29,7 +29,6 @@
 #include "kenwood.h"
 #include "th.h"
 #include "misc.h"
-#include "iofunc.h"
 
 #define THD74_MODES (RIG_MODE_FM|RIG_MODE_AM|RIG_MODE_LSB|RIG_MODE_USB|RIG_MODE_CW|RIG_MODE_FMN|RIG_MODE_WFM|RIG_MODE_CWR)
 #define THD74_MODES_TX  (RIG_MODE_FM)
@@ -1442,7 +1441,7 @@ int thd74_set_split_freq(RIG *rig, vfo_t vfo, freq_t tx_freq)
     return -RIG_EPROTO;
 }
 
-#ifdef false    /* not working */
+#if 0    /* not working */
 #define CMD_SZ 5
 #define BLOCK_SZ 256
 #define BLOCK_COUNT 256

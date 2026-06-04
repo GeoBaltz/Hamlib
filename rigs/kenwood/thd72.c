@@ -29,7 +29,6 @@
 #include "kenwood.h"
 #include "th.h"
 #include "misc.h"
-#include "iofunc.h"
 
 // Some commands are very slow to process so we put a DELAY in those places
 #define DELAY hl_usleep(300*1000)
@@ -1450,7 +1449,7 @@ static int thd72_get_channel(RIG *rig, vfo_t vfo, channel_t *chan,
     return RIG_OK;
 }
 
-#ifdef false  /* not working */
+#if 0  /* not working */
 #define CMD_SZ 5
 #define BLOCK_SZ 256
 #define BLOCK_COUNT 256
