@@ -8973,7 +8973,7 @@ HAMLIB_EXPORT(int) rig_send_raw(RIG *rig, const unsigned char *send,
             }
         }
 
-        memcpy(reply, buf, reply_len - 1);
+        memcpy(reply, buf, nbytes);
     }
     else
     {
