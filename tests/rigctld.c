@@ -107,21 +107,12 @@ static struct option long_options[] =
     {"twiddle_rit",     1, 0, 'w'},
     {"uplink",          1, 0, 'x'},
     {"debug-time-stamps", 0, 0, 'Z'},
+#if RIGCTLD_PASSWORDS
     {"password",        1, 0, 'A'},
+#endif
     {"rigctld-idle",    0, 0, 'R'},
     {"bind-all",        0, 0, 'b'},
     {0, 0, 0, 0}
-};
-
-
-struct handle_data
-{
-    RIG *rig;
-    int sock;
-    struct sockaddr_storage cli_addr;
-    socklen_t clilen;
-    int vfo_mode;
-    int use_password;
 };
 
 
@@ -320,6 +311,7 @@ int main(int argc, char *argv[])
             bind_all = 1;
             break;
 
+#if RIGCTLD_PASSWORDS
         case 'A':
             strncpy(rigctld_password, optarg, sizeof(rigctld_password) - 1);
             //char *md5 = rig_make_m d5(rigctld_password);
@@ -328,6 +320,7 @@ int main(int argc, char *argv[])
             printf("Secret key: %s\n", md5);
             rig_settings_save("sharedkey", md5, e_CHAR);
             break;
+#endif
 
         case 'm':
             my_model = atoi(optarg);
@@ -971,6 +964,8 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
+    rigctl_parse_init();
+
     /*
      * main loop accepting connections
      */
@@ -1170,6 +1165,13 @@ void *handle_socket(void *arg)
         goto handle_exit;
     }
 
+    retcode = pthread_setspecific(thread_data_key, arg);
+    if (0 != retcode)
+    {
+        rig_debug(RIG_DEBUG_ERR, "%s: Could not set thread daya\n", __func__);
+        // What do we do here?
+    }
+
     mutex_rigctld(1);
 
     ++client_count;
@@ -1357,6 +1359,7 @@ handle_exit:
 
 #endif
 
+    pthread_setspecific(thread_data_key, NULL);      // Tell pthreads we're done with the data
     free(arg);
 
     pthread_exit(NULL);
@@ -1392,7 +1395,9 @@ static void usage(FILE *fout)
         "  -w, --twiddle_rit=SECONDS     suppress VFOB getfreq so RIT can be twiddled\n"
         "  -x, --uplink=OPTION           set uplink get_freq ignore, option 1=Sub, 2=Main\n"
         "  -Z, --debug-time-stamps       enable time stamps for debug messages\n"
+#if RIGCTLD_PASSWORDS
         "  -A, --password=PASSWORD       set password for rigctld access (NOT IMPLEMENTED)\n"
+#endif
         "  -R, --rigctld-idle            make rigctld close the rig when no clients are connected\n"
         "  -b, --bind-all                make rigctld bind to first network device available\n"
         "  -h, --help                    display this help and exit\n"
